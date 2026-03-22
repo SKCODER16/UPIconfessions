@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UPIconfessions — Swipe. Judge. Roast.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0a;
+  --surface: #111111;
+  --card: #181818;
+  --border: #2a2a2a;
+  --green: #00ff87;
+  --green-dim: #00ff8720;
+  --red: #ff3b3b;
+  --red-dim: #ff3b3b20;
+  --yellow: #ffd60a;
+  --yellow-dim: #ffd60a15;
+  --blue: #3b82f6;
+  --blue-dim: #3b82f620;
+  --white: #f0f0f0;
+  --muted: #555;
+  --mid: #888;
+}
+body.light {
+  --bg: #f5f4f0;
+  --surface: #ebebeb;
+  --card: #ffffff;
+  --border: #d5d5d5;
+  --green: #00a855;
+  --green-dim: #00a85520;
+  --red: #e0272a;
+  --red-dim: #e0272a15;
+  --yellow: #b88800;
+  --yellow-dim: #b8880015;
+  --blue: #1a5fd1;
+  --blue-dim: #1a5fd115;
+  --white: #0d0d0d;
+  --muted: #aaa;
+  --mid: #666;
+}
+body.light::before { opacity: 0.08; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Instrument Sans', sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.4;
+}
+
+/* NAV */
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 5vw;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--white);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--green); }
+.nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+.nav-links a {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--mid);
+  text-decoration: none;
+  letter-spacing: 0.04em;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--white); }
+.nav-btn {
+  background: var(--green);
+  color: #000 !important;
+  padding: 0.45rem 1.1rem;
+  border-radius: 4px;
+  font-weight: 600 !important;
+}
+.theme-toggle {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: border-color 0.2s, background 0.2s;
+}
+.theme-toggle:hover { border-color: var(--mid); }
+.live-dot {
+  width: 7px; height: 7px;
+  background: var(--green);
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 1.5s ease infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* HERO */
+.hero {
+  padding: 4rem 5vw 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--green-dim);
+  border: 1px solid var(--green);
+  color: var(--green);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.3rem 0.8rem;
+  border-radius: 100px;
+  margin-bottom: 1.5rem;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 800;
+  line-height: 1.0;
+  letter-spacing: -3px;
+  margin-bottom: 1rem;
+}
+.hero h1 .accent { color: var(--green); }
+.hero h1 .red { color: var(--red); }
+.hero-sub {
+  font-size: 1rem;
+  color: var(--mid);
+  line-height: 1.7;
+  max-width: 500px;
+  margin: 0 auto 2.5rem;
+}
+.hero-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  background: var(--green);
+  color: #000;
+  padding: 0.8rem 1.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  text-decoration: none;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--white);
+  padding: 0.8rem 1.8rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s;
+  text-decoration: none;
+  font-family: 'Instrument Sans', sans-serif;
+}
+.btn-ghost:hover { border-color: var(--mid); }
+
+/* STATS */
+.stats-bar {
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.stat {
+  text-align: center;
+  padding: 1.8rem 1rem;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--green);
+  display: block;
+}
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+  letter-spacing: 0.05em;
+}
+
+/* ─── SWIPE CARD SECTION ─── */
+.swipe-section {
+  padding: 5rem 5vw;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.section-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--green);
+  letter-spacing: 0.12em;
+  margin-bottom: 0.6rem;
+  text-transform: uppercase;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 0.5rem;
+}
+.section-sub {
+  color: var(--mid);
+  font-size: 0.9rem;
+  margin-bottom: 3rem;
+}
+.swipe-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* CARD STACK */
+.card-stack-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.card-counter {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--mid);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.06em;
+}
+.card-stack {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 320px;
+  margin-bottom: 2rem;
+}
+/* background stacked cards */
+.card-stack::before,
+.card-stack::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+.card-stack::before { transform: rotate(4deg) translateY(8px); z-index: 0; opacity: 0.5; }
+.card-stack::after  { transform: rotate(-2deg) translateY(4px); z-index: 1; opacity: 0.7; }
+
+.flash-card {
+  position: absolute;
+  inset: 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.35s cubic-bezier(.4,0,.2,1), opacity 0.35s;
+  cursor: grab;
+  user-select: none;
+}
+.flash-card.swipe-left {
+  transform: translateX(-140%) rotate(-18deg) !important;
+  opacity: 0;
+}
+.flash-card.swipe-right {
+  transform: translateX(140%) rotate(18deg) !important;
+  opacity: 0;
+}
+.flash-card.swipe-up {
+  transform: translateY(-120%) scale(0.9) !important;
+  opacity: 0;
+}
+.flash-card:active { cursor: grabbing; }
+
+/* drag tilt overlays */
+.flash-card .broke-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--red-dim);
+  border: 2px solid var(--red);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--red);
+  letter-spacing: 3px;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+.flash-card .bougie-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--green-dim);
+  border: 2px solid var(--green);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--green);
+  letter-spacing: 3px;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+.flash-card .worth-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--yellow-dim);
+  border: 2px solid var(--yellow);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--yellow);
+  letter-spacing: 3px;
+  pointer-events: none;
+  transition: opacity 0.1s;
+}
+
+.fc-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.fc-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 3.5rem;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--white);
+}
+.fc-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  color: var(--mid);
+}
+.fc-note {
+  font-size: 1rem;
+  color: var(--mid);
+  line-height: 1.6;
+  font-style: italic;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+}
+.fc-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.fc-votes-preview {
+  display: flex;
+  gap: 0.8rem;
+}
+.fc-vote-pill {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--mid);
+}
+.fc-vote-pill.broke { color: var(--red); }
+.fc-vote-pill.bougie { color: var(--green); }
+.fc-vote-pill.worth { color: var(--yellow); }
+.fc-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+}
+
+/* SWIPE BUTTONS */
+.swipe-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+.swipe-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.swipe-btn:hover { transform: scale(1.08); }
+.swipe-btn-circle {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.swipe-btn.broke .swipe-btn-circle { border-color: var(--red); }
+.swipe-btn.broke:hover .swipe-btn-circle { background: var(--red-dim); }
+.swipe-btn.bougie .swipe-btn-circle { border-color: var(--green); }
+.swipe-btn.bougie:hover .swipe-btn-circle { background: var(--green-dim); }
+.swipe-btn.worth .swipe-btn-circle { border-color: var(--yellow); }
+.swipe-btn.worth:hover .swipe-btn-circle { background: var(--yellow-dim); }
+.swipe-btn-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--mid);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.swipe-hint {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 1rem;
+  letter-spacing: 0.05em;
+}
+
+/* DONE STATE */
+.all-done {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 320px;
+  text-align: center;
+  gap: 1rem;
+}
+.all-done.show { display: flex; }
+.all-done-emoji { font-size: 3.5rem; }
+.all-done h3 { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; }
+.all-done p { color: var(--mid); font-size: 0.9rem; }
+
+/* COMMENT SECTION (RIGHT SIDE) */
+.comment-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  position: sticky;
+  top: 90px;
+}
+.comment-panel-header {
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.comment-panel-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.comment-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid var(--green);
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+.comments-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.comments-list::-webkit-scrollbar { width: 4px; }
+.comments-list::-webkit-scrollbar-track { background: transparent; }
+.comments-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.comment-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem;
+  animation: fadeUp 0.3s ease both;
+}
+.comment-top {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+.comment-user {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--green);
+}
+.comment-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+}
+.comment-tag.cheaper { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.comment-tag.costlier { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.comment-tag.roast { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+.comment-text {
+  font-size: 0.82rem;
+  color: var(--mid);
+  line-height: 1.5;
+}
+.comment-input-wrap {
+  padding: 0.8rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.comment-tags-row {
+  display: flex;
+  gap: 0.4rem;
+}
+.tag-select {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag-select:hover, .tag-select.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.tag-select.active-red { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.tag-select.active-yellow { border-color: var(--yellow); color: var(--yellow); background: var(--yellow-dim); }
+.comment-input-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.comment-input {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.6rem 0.8rem;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.82rem;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.comment-input:focus { border-color: var(--green); }
+.comment-input::placeholder { color: var(--muted); }
+.comment-submit {
+  background: var(--green);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  padding: 0.6rem 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.comment-submit:hover { opacity: 0.85; }
+
+/* ── CONFESS FORM ── */
+.confess-section {
+  padding: 5rem 5vw;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.form-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 680px;
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+.form-group label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--mid);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: 'Instrument Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color: var(--green); }
+.form-group textarea { resize: vertical; min-height: 80px; }
+.form-group select option { background: var(--card); }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.cat-pill {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.6rem;
+  font-size: 0.82rem;
+  color: var(--mid);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  user-select: none;
+}
+.cat-pill:hover { border-color: var(--mid); color: var(--white); }
+.cat-pill.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+
+/* ── COMPARE SECTION (from v2) ── */
+.compare-section {
+  padding: 5rem 5vw;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.compare-inner { max-width: 1100px; margin: 0 auto; }
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.compare-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+}
+.cmp-row { margin-bottom: 1.8rem; }
+.cmp-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--mid);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.cmp-bar-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.35rem; }
+.cmp-bar-label { font-family: 'DM Mono', monospace; font-size: 0.62rem; color: var(--muted); width: 24px; flex-shrink: 0; }
+.cmp-bar-track { flex: 1; height: 10px; background: var(--surface); border-radius: 100px; overflow: hidden; }
+.cmp-bar-fill { height: 100%; border-radius: 100px; transition: width 1.2s ease; }
+.cmp-bar-fill.you { background: var(--green); }
+.cmp-bar-fill.you.over { background: var(--red); }
+.cmp-bar-fill.avg { background: var(--muted); }
+.cmp-bar-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.88rem; width: 60px; text-align: right; flex-shrink: 0; }
+
+.verdict-box {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--red-dim);
+  border: 1px solid var(--red);
+}
+.verdict-box p { font-size: 0.82rem; color: var(--red); line-height: 1.6; }
+
+/* city breakdown right side */
+.city-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.city-box-header {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.city-row {
+  display: flex;
+  align-items: center;
+  padding: 0.85rem 1.2rem;
+  border-bottom: 1px solid var(--border);
+  gap: 1rem;
+}
+.city-row:last-child { border-bottom: none; }
+.city-name { flex: 1; font-size: 0.88rem; color: var(--mid); }
+.city-avg { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--green); }
+.city-rank {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 2px;
+}
+.city-rank.high { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.city-rank.low { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+
+/* ── REGRET BOARD ── */
+.regret-section {
+  padding: 5rem 5vw;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.regret-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.regret-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.regret-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--red);
+}
+.regret-card:hover { border-color: var(--red); }
+.regret-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--red);
+  margin-bottom: 0.3rem;
+}
+.regret-what { font-size: 0.88rem; color: var(--white); margin-bottom: 0.3rem; font-weight: 500; }
+.regret-note { font-size: 0.78rem; color: var(--mid); line-height: 1.5; font-style: italic; margin-bottom: 1rem; }
+.regret-votes { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+/* ── LEADERBOARD ── */
+.lb-section {
+  padding: 5rem 5vw;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+.lb-inner { max-width: 1100px; margin: 0 auto; }
+.lb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.lb-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.lb-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.6rem; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+.lb-header.broke { color: var(--red); }
+.lb-header.bougie { color: var(--green); }
+.lb-row { display: flex; align-items: center; padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border); gap: 1rem; transition: background 0.15s; }
+.lb-row:last-child { border-bottom: none; }
+.lb-row:hover { background: var(--surface); }
+.lb-rank { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); width: 20px; }
+.lb-rank.gold { color: var(--yellow); }
+.lb-user { flex: 1; font-size: 0.88rem; color: var(--white); }
+.lb-amount { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; }
+.lb-amount.broke { color: var(--red); }
+.lb-amount.bougie { color: var(--green); }
+
+/* ── PERSONALITY ── */
+.personality-section {
+  padding: 5rem 5vw;
+  border-top: 1px solid var(--border);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.p-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+.p-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; transition: border-color 0.2s, transform 0.2s; cursor: pointer; }
+.p-card:hover { border-color: #3a3a3a; transform: translateY(-3px); }
+.p-emoji { font-size: 2rem; margin-bottom: 0.8rem; display: block; }
+.p-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem; margin-bottom: 0.3rem; }
+.p-desc { font-size: 0.8rem; color: var(--mid); line-height: 1.5; }
+.p-tag { margin-top: 0.8rem; font-family: 'DM Mono', monospace; font-size: 0.65rem; padding: 0.2rem 0.5rem; border-radius: 3px; display: inline-block; }
+.p-tag.saver { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.p-tag.spender { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.p-tag.chaotic { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+
+/* ── TRENDING ── */
+.trending-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+.t-filter {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--mid);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+.t-filter:hover { border-color: var(--mid); color: var(--white); }
+.t-filter.active { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.trending-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+.t-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.4rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.t-card:hover { border-color: #3a3a3a; transform: translateY(-2px); }
+.t-rank-badge {
+  position: absolute;
+  top: 1rem; right: 1rem;
+  font-family: 'Syne', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 800;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  color: var(--mid);
+}
+.t-rank-badge.top1 { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+.t-rank-badge.top2 { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+.t-rank-badge.top3 { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+.t-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 0.2rem;
+}
+.t-cat {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--mid);
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.04em;
+}
+.t-note {
+  font-size: 0.82rem;
+  color: var(--mid);
+  font-style: italic;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+.t-bar-wrap {
+  margin-bottom: 0.8rem;
+}
+.t-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+.t-bar-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  width: 42px;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.t-bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface);
+  border-radius: 100px;
+  overflow: hidden;
+}
+.t-bar-fill { height: 100%; border-radius: 100px; }
+.t-bar-fill.broke { background: var(--red); }
+.t-bar-fill.bougie { background: var(--green); }
+.t-bar-fill.worth { background: var(--yellow); }
+.t-bar-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  width: 30px;
+  text-align: right;
+  color: var(--mid);
+  flex-shrink: 0;
+}
+.t-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.t-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--mid);
+}
+.t-verdict {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+.t-verdict.broke { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
+.t-verdict.bougie { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
+.t-verdict.worth { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 2rem 5vw; display: flex; justify-content: space-between; align-items: center; }
+footer .f-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--white); text-decoration: none; }
+footer .f-logo span { color: var(--green); }
+footer p { font-size: 0.78rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--card); border: 1px solid var(--green); color: var(--green); font-family: 'DM Mono', monospace; font-size: 0.82rem; padding: 0.7rem 1.4rem; border-radius: 6px; z-index: 1000; transition: transform 0.3s ease; pointer-events: none; letter-spacing: 0.04em; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+@media (max-width: 900px) {
+  .swipe-layout { grid-template-columns: 1fr; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .lb-grid { grid-template-columns: 1fr; }
+  .p-grid { grid-template-columns: 1fr; }
+  .regret-grid { grid-template-columns: 1fr; }
+  .trending-grid { grid-template-columns: 1fr; }
+  .stats-bar { grid-template-columns: repeat(2,1fr); }
+  .nav-links { display: none; }
+}
+/* ── PERSONALITY BANNER ── */
+.personality-banner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.2rem 5vw;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.pb-left {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex: 1;
+  min-width: 220px;
+}
+.pb-emoji-wrap {
+  width: 46px; height: 46px;
+  border-radius: 10px;
+  background: var(--yellow-dim);
+  border: 1px solid var(--yellow);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.pb-text-top {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--mid);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.pb-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--yellow);
+  letter-spacing: -0.3px;
+}
+.pb-desc {
+  font-size: 0.78rem;
+  color: var(--mid);
+  margin-top: 0.1rem;
+}
+.pb-divider {
+  width: 1px;
+  height: 40px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+.pb-friends-box {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s;
+  text-decoration: none;
+}
+.pb-friends-box:hover {
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+.pb-friends-avatars {
+  display: flex;
+}
+.pb-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  margin-left: -6px;
+  flex-shrink: 0;
+}
+.pb-avatar:first-child { margin-left: 0; }
+.pb-friends-text { display: flex; flex-direction: column; }
+.pb-friends-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--mid);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pb-friends-action {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--green);
+}
+.pb-arrow {
+  font-size: 0.9rem;
+  color: var(--green);
+  margin-left: 0.2rem;
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast">done 💀</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">UPI<span>confessions</span></a>
+  <ul class="nav-links">
+    <li><a href="#judge">Judge</a></li>
+    <li><a href="#trending">Trending</a></li>
+    <li><a href="#confess">Confess</a></li>
+    <li><a href="#compare">Compare</a></li>
+    <li><a href="#leaderboard">Leaderboard</a></li>
+    <li>
+      <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </li>
+    <li><a href="#confess" class="nav-btn">Drop Confession</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span class="live-dot"></span> 2,847 confessions live right now</div>
+  <h1>Swipe.<br><span class="accent">Judge.</span><br><span class="red">Get Roasted.</span></h1>
+  <p class="hero-sub">Anonymous expense confessions. You swipe — Broke, Bougie or Worth It. Leave a roast. Find out if you're the worst spender in your city.</p>
+  <div class="hero-btns">
+    <a href="#judge" class="btn-primary">Start Judging 👆</a>
+    <a href="#confess" class="btn-ghost">Drop a Confession</a>
+  </div>
+</section>
+
+<!-- PERSONALITY BANNER -->
+<div class="personality-banner" id="personalityBanner">
+  <div class="pb-left">
+    <div class="pb-emoji-wrap" id="pbEmoji">🎰</div>
+    <div>
+      <div class="pb-text-top">Your spending personality</div>
+      <div class="pb-name" id="pbName">Impulse Oracle</div>
+      <div class="pb-desc" id="pbDesc">Completely random. Vibes only. No logic.</div>
+    </div>
+  </div>
+  <div class="pb-divider"></div>
+  <a href="#personality" class="pb-friends-box" id="pbFriendsBox">
+    <div class="pb-friends-avatars">
+      <div class="pb-avatar">🧃</div>
+      <div class="pb-avatar">👑</div>
+      <div class="pb-avatar">🪨</div>
+      <div class="pb-avatar">🕳️</div>
+    </div>
+    <div class="pb-friends-text">
+      <span class="pb-friends-label">Check your friends</span>
+      <span class="pb-friends-action">See all personalities →</span>
+    </div>
+    <span class="pb-arrow">↓</span>
+  </a>
+</div>
+
+<!-- STATS -->
+<div style="border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+  <div class="stats-bar">
+    <div class="stat"><span class="stat-num" data-target="28470">0</span><span class="stat-label">confessions</span></div>
+    <div class="stat"><span class="stat-num">₹847</span><span class="stat-label">avg monthly spend</span></div>
+    <div class="stat"><span class="stat-num" data-target="64">0</span><span class="stat-label">% voted broke</span></div>
+    <div class="stat"><span class="stat-num" data-target="3200">0</span><span class="stat-label">roasters online</span></div>
+  </div>
+</div>
+
+<!-- ── FLASHCARD JUDGE SECTION ── -->
+<div class="swipe-section" id="judge">
+  <p class="section-tag">// swipe to judge</p>
+  <h2 class="section-title">Broke, Bougie or Worth It?</h2>
+  <p class="section-sub">Swipe through confessions. Vote with the buttons or drag the card. Leave a roast in the comments.</p>
+
+  <div class="swipe-layout">
+    <!-- LEFT: CARD STACK -->
+    <div class="card-stack-wrap">
+      <div class="card-counter" id="cardCounter">Card 1 of 8</div>
+
+      <div class="card-stack" id="cardStack">
+        <!-- DONE STATE -->
+        <div class="all-done" id="allDone">
+          <div class="all-done-emoji">🫠</div>
+          <h3>You've judged them all</h3>
+          <p>Come back tomorrow for fresh confessions.<br>Or drop your own 👇</p>
+          <a href="#confess" class="btn-primary" style="margin-top:0.5rem">Drop a Confession</a>
+        </div>
+
+        <!-- FLASH CARD (rendered by JS) -->
+        <div class="flash-card" id="flashCard">
+          <div class="broke-overlay">💀 BROKE</div>
+          <div class="bougie-overlay">👑 BOUGIE</div>
+          <div class="worth-overlay">✅ WORTH IT</div>
+          <div class="fc-top">
+            <span class="fc-amount" id="fcAmount">₹580</span>
+            <span class="fc-cat" id="fcCat">☕ Food</span>
+          </div>
+          <p class="fc-note" id="fcNote">"cold brew + avocado toast at that fancy café near college. i am not okay financially."</p>
+          <div class="fc-meta">
+            <div class="fc-votes-preview">
+              <span class="fc-vote-pill broke" id="fcBroke">💀 312</span>
+              <span class="fc-vote-pill bougie" id="fcBougie">👑 89</span>
+              <span class="fc-vote-pill worth" id="fcWorth">✅ 230</span>
+            </div>
+            <span class="fc-time" id="fcTime">2 min ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VOTE BUTTONS -->
+      <div class="swipe-btns" id="swipeBtns">
+        <div class="swipe-btn broke" onclick="castVote('broke')">
+          <div class="swipe-btn-circle">💀</div>
+          <span class="swipe-btn-label">Broke</span>
+        </div>
+        <div class="swipe-btn worth" onclick="castVote('worth')">
+          <div class="swipe-btn-circle">✅</div>
+          <span class="swipe-btn-label">Worth It</span>
+        </div>
+        <div class="swipe-btn bougie" onclick="castVote('bougie')">
+          <div class="swipe-btn-circle">👑</div>
+          <span class="swipe-btn-label">Bougie</span>
+        </div>
+      </div>
+      <p class="swipe-hint">← drag left = Broke &nbsp;·&nbsp; drag right = Bougie &nbsp;·&nbsp; drag up = Worth It</p>
+    </div>
+
+    <!-- RIGHT: COMMENT PANEL -->
+    <div class="comment-panel">
+      <div class="comment-panel-header">
+        <span class="comment-panel-title">Roast Section 🔥</span>
+        <span class="comment-count" id="commentCount">5 roasts</span>
+      </div>
+      <div class="comments-list" id="commentsList">
+        <div class="comment-item">
+          <div class="comment-top">
+            <span class="comment-user">@broke_oracle</span>
+            <span class="comment-tag cheaper">got it cheaper</span>
+          </div>
+          <p class="comment-text">bro i get the same cold brew for ₹180 at the place near metro. you got scammed 💀</p>
+        </div>
+        <div class="comment-item">
+          <div class="comment-top">
+            <span class="comment-user">@upi_ghost</span>
+            <span class="comment-tag roast">roast</span>
+          </div>
+          <p class="comment-text">avocado toast in india is a hate crime against your wallet</p>
+        </div>
+        <div class="comment-item">
+          <div class="comment-top">
+            <span class="comment-user">@mainchar_energy</span>
+            <span class="comment-tag costlier">found it costlier</span>
+          </div>
+          <p class="comment-text">paid ₹720 for the same thing last week. you actually ate well ngl 😭</p>
+        </div>
+        <div class="comment-item">
+          <div class="comment-top">
+            <span class="comment-user">@anonymous_rat</span>
+            <span class="comment-tag roast">roast</span>
+          </div>
+          <p class="comment-text">this is why you ask for money before month end</p>
+        </div>
+        <div class="comment-item">
+          <div class="comment-top">
+            <span class="comment-user">@thriftqueen99</span>
+            <span class="comment-tag cheaper">got it cheaper</span>
+          </div>
+          <p class="comment-text">chai tapri exists. just saying. ₹10 and you still get the energy.</p>
+        </div>
+      </div>
+
+      <!-- COMMENT INPUT -->
+      <div class="comment-input-wrap">
+        <div class="comment-tags-row">
+          <span class="tag-select" id="tag-cheaper" onclick="selectTag('cheaper')">💚 Got it cheaper</span>
+          <span class="tag-select" id="tag-costlier" onclick="selectTag('costlier')">🔴 Found it costlier</span>
+          <span class="tag-select" id="tag-roast" onclick="selectTag('roast')">🔥 Roast</span>
+        </div>
+        <div class="comment-input-row">
+          <input class="comment-input" id="commentInput" placeholder="type your roast or price tip..." maxlength="120" />
+          <button class="comment-submit" onclick="submitComment()">Post</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONFESS FORM ── -->
+<div class="confess-section" id="confess">
+  <p class="section-tag">// drop your confession</p>
+  <h2 class="section-title">What Did You Spend On?</h2>
+  <p class="section-sub" style="margin-bottom:2rem">Anonymous by default. The community will judge you. You deserve it.</p>
+  <div class="form-box">
+    <div class="form-row">
+      <div class="form-group" style="margin-bottom:0">
+        <label>Amount (₹)</label>
+        <input type="number" id="amount" placeholder="e.g. 450" min="1"/>
+      </div>
+      <div class="form-group" style="margin-bottom:0">
+        <label>What For</label>
+        <input type="text" id="what" placeholder="e.g. overpriced matcha latte"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Category</label>
+      <div class="cat-grid">
+        <div class="cat-pill active" onclick="selectCat(this)">🍕 Food</div>
+        <div class="cat-pill" onclick="selectCat(this)">🚗 Transport</div>
+        <div class="cat-pill" onclick="selectCat(this)">🛍️ Shopping</div>
+        <div class="cat-pill" onclick="selectCat(this)">🎬 Entertainment</div>
+        <div class="cat-pill" onclick="selectCat(this)">📱 Subscription</div>
+        <div class="cat-pill" onclick="selectCat(this)">😭 Random</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Confession Note (optional)</label>
+      <textarea id="note" placeholder="tell us how you justify this..."></textarea>
+    </div>
+    <button class="btn-primary" style="width:100%;text-align:center;" onclick="submitConfession()">Drop Anonymously 💀</button>
+  </div>
+</div>
+
+<!-- ── COMPARE SECTION (V2 style) ── -->
+<div class="compare-section" id="compare">
+  <div class="compare-inner">
+    <p class="section-tag">// how do you compare</p>
+    <h2 class="section-title">Your Spending vs The City</h2>
+    <p class="section-sub" style="margin-bottom:2.5rem">Anonymous comparison. No names. Just cold hard numbers.</p>
+    <div class="compare-grid">
+      <div class="compare-box">
+        <div class="cmp-row">
+          <div class="cmp-label"><span>🍕 Food</span><span style="color:var(--red)">+33% above avg</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">YOU</span><div class="cmp-bar-track"><div class="cmp-bar-fill you over" style="width:72%"></div></div><span class="cmp-bar-val" style="color:var(--red)">₹3,200</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">AVG</span><div class="cmp-bar-track"><div class="cmp-bar-fill avg" style="width:55%"></div></div><span class="cmp-bar-val" style="color:var(--muted)">₹2,400</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-label"><span>🛍️ Shopping</span><span style="color:var(--red)">+110% above avg</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">YOU</span><div class="cmp-bar-track"><div class="cmp-bar-fill you over" style="width:85%"></div></div><span class="cmp-bar-val" style="color:var(--red)">₹6,800</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">AVG</span><div class="cmp-bar-track"><div class="cmp-bar-fill avg" style="width:40%"></div></div><span class="cmp-bar-val" style="color:var(--muted)">₹3,200</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-label"><span>🚗 Transport</span><span style="color:var(--green)">below avg 👍</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">YOU</span><div class="cmp-bar-track"><div class="cmp-bar-fill you" style="width:28%"></div></div><span class="cmp-bar-val" style="color:var(--green)">₹800</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">AVG</span><div class="cmp-bar-track"><div class="cmp-bar-fill avg" style="width:45%"></div></div><span class="cmp-bar-val" style="color:var(--muted)">₹1,800</span></div>
+        </div>
+        <div class="cmp-row">
+          <div class="cmp-label"><span>📱 Subscriptions</span><span style="color:var(--green)">below avg 👍</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">YOU</span><div class="cmp-bar-track"><div class="cmp-bar-fill you" style="width:20%"></div></div><span class="cmp-bar-val" style="color:var(--green)">₹299</span></div>
+          <div class="cmp-bar-row"><span class="cmp-bar-label">AVG</span><div class="cmp-bar-track"><div class="cmp-bar-fill avg" style="width:38%"></div></div><span class="cmp-bar-val" style="color:var(--muted)">₹580</span></div>
+        </div>
+        <div class="verdict-box">
+          <p>⚠️ You spend <strong>2.1x more</strong> on shopping than city average. Community verdict this month: <strong>💀 Broke</strong>. Your food spend is also above average. Transport saved you.</p>
+        </div>
+      </div>
+
+      <!-- CITY BREAKDOWN -->
+      <div>
+        <div class="city-box">
+          <div class="city-box-header">📍 Average Spend by City</div>
+          <div class="city-row"><span class="city-name">Mumbai</span><span class="city-avg">₹12,400/mo</span><span class="city-rank high">highest</span></div>
+          <div class="city-row"><span class="city-name">Bangalore</span><span class="city-avg">₹10,800/mo</span><span class="city-rank high">high</span></div>
+          <div class="city-row"><span class="city-name">Delhi</span><span class="city-avg">₹9,200/mo</span><span class="city-rank high">high</span></div>
+          <div class="city-row"><span class="city-name">Pune</span><span class="city-avg">₹7,400/mo</span><span class="city-rank low">average</span></div>
+          <div class="city-row"><span class="city-name">Hyderabad</span><span class="city-avg">₹6,800/mo</span><span class="city-rank low">low</span></div>
+          <div class="city-row"><span class="city-name">Indore</span><span class="city-avg">₹4,200/mo</span><span class="city-rank low">lowest</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── REGRET BOARD ── -->
+<div class="regret-section" id="regret">
+  <p class="section-tag">// monthly regret board</p>
+  <h2 class="section-title">This Month's Biggest Regrets</h2>
+  <p class="section-sub" style="margin-bottom:2rem">Purchases people wish they never made. Voted by the community.</p>
+  <div class="regret-grid">
+    <div class="regret-card">
+      <div class="regret-amount">₹4,500</div>
+      <div class="regret-what">Impulse online shopping at 2am</div>
+      <p class="regret-note">"bought 3 things i didn't need. returned 0. currently eating instant noodles."</p>
+      <div class="regret-votes">😭 2.1k relate · 💀 1.8k votes broke</div>
+    </div>
+    <div class="regret-card">
+      <div class="regret-amount">₹1,200</div>
+      <div class="regret-what">Gym membership never used</div>
+      <p class="regret-note">"went once. on the first day. it's been 3 months."</p>
+      <div class="regret-votes">😭 4.3k relate · 💀 3.9k votes broke</div>
+    </div>
+    <div class="regret-card">
+      <div class="regret-amount">₹800</div>
+      <div class="regret-what">Canteen food when mess exists</div>
+      <p class="regret-note">"paid for mess. didn't go once. ate outside every day. i hate myself."</p>
+      <div class="regret-votes">😭 5.7k relate · 💀 5.2k votes broke</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TRENDING ── -->
+<div class="lb-section" id="trending">
+  <div class="lb-inner">
+    <p class="section-tag">// most voted this week</p>
+    <h2 class="section-title">Trending Confessions 🔥</h2>
+    <p class="section-sub" style="margin-bottom:2rem">The spends the internet cannot stop judging this week.</p>
+
+    <!-- FILTER ROW -->
+    <div class="trending-filters" id="trendingFilters">
+      <button class="t-filter active" onclick="filterTrending(this,'all')">All</button>
+      <button class="t-filter" onclick="filterTrending(this,'food')">🍕 Food</button>
+      <button class="t-filter" onclick="filterTrending(this,'shopping')">🛍️ Shopping</button>
+      <button class="t-filter" onclick="filterTrending(this,'entertainment')">🎬 Entertainment</button>
+      <button class="t-filter" onclick="filterTrending(this,'transport')">🚗 Transport</button>
+      <button class="t-filter" onclick="filterTrending(this,'subscription')">📱 Subscription</button>
+    </div>
+
+    <div class="trending-grid" id="trendingGrid"></div>
+  </div>
+</div>
+
+<!-- ── LEADERBOARD ── -->
+<div class="lb-section" id="leaderboard">
+  <div class="lb-inner">
+    <p class="section-tag">// this week's hall of shame & fame</p>
+    <h2 class="section-title">Broke or Bougie?</h2>
+    <p class="section-sub" style="margin-bottom:2rem">Weekly leaderboard. Community voted. Zero mercy.</p>
+    <div class="lb-grid">
+      <div class="lb-card">
+        <div class="lb-header broke">💀 Most Broke Spends</div>
+        <div class="lb-row"><span class="lb-rank gold">1</span><span class="lb-user">anonymous_rat_22</span><span class="lb-amount broke">₹12,400</span></div>
+        <div class="lb-row"><span class="lb-rank">2</span><span class="lb-user">broke_but_aesthetic</span><span class="lb-amount broke">₹8,900</span></div>
+        <div class="lb-row"><span class="lb-rank">3</span><span class="lb-user">upi_is_my_enemy</span><span class="lb-amount broke">₹6,200</span></div>
+        <div class="lb-row"><span class="lb-rank">4</span><span class="lb-user">rent_who_lol</span><span class="lb-amount broke">₹4,800</span></div>
+        <div class="lb-row"><span class="lb-rank">5</span><span class="lb-user">justonemore_purchase</span><span class="lb-amount broke">₹3,100</span></div>
+      </div>
+      <div class="lb-card">
+        <div class="lb-header bougie">👑 Most Bougie Spends</div>
+        <div class="lb-row"><span class="lb-rank gold">1</span><span class="lb-user">quietly_rich_vibes</span><span class="lb-amount bougie">₹45,000</span></div>
+        <div class="lb-row"><span class="lb-rank">2</span><span class="lb-user">no_budget_no_problem</span><span class="lb-amount bougie">₹28,500</span></div>
+        <div class="lb-row"><span class="lb-rank">3</span><span class="lb-user">treat_yourself_always</span><span class="lb-amount bougie">₹19,200</span></div>
+        <div class="lb-row"><span class="lb-rank">4</span><span class="lb-user">maincharacter_fr</span><span class="lb-amount bougie">₹14,700</span></div>
+        <div class="lb-row"><span class="lb-rank">5</span><span class="lb-user">splurge_szn</span><span class="lb-amount bougie">₹11,300</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── PERSONALITY ── -->
+<div class="personality-section" id="personality">
+  <p class="section-tag">// your spending dna</p>
+  <h2 class="section-title">What's Your Spending Personality?</h2>
+  <p class="section-sub" style="margin-bottom:2rem">Unlocks after 30 days of confessions. Based on your actual data.</p>
+  <div class="p-grid">
+    <div class="p-card"><span class="p-emoji">🧃</span><div class="p-name">Chai Chuski</div><p class="p-desc">Saves on big things but blows it on daily pleasures. Tea, snacks, auto rides. Never splurges, never saves.</p><span class="p-tag chaotic">neutral chaos</span></div>
+    <div class="p-card"><span class="p-emoji">👑</span><div class="p-name">UPI King/Queen</div><p class="p-desc">Every purchase is an experience. Minimum budgeting. Maximum vibes. Zero apologies. Probably in debt.</p><span class="p-tag spender">certified spender</span></div>
+    <div class="p-card"><span class="p-emoji">🪨</span><div class="p-name">Stone Wallet</div><p class="p-desc">Has money. Refuses to spend it. Still uses free Spotify. Considers every purchase for 3 weeks then says no.</p><span class="p-tag saver">extreme saver</span></div>
+    <div class="p-card"><span class="p-emoji">🎰</span><div class="p-name">Impulse Oracle</div><p class="p-desc">Saves ₹50 on groceries then spends ₹3000 at 1am. Completely random. Vibes only. No logic.</p><span class="p-tag chaotic">chaotic neutral</span></div>
+    <div class="p-card"><span class="p-emoji">📊</span><div class="p-name">Spreadsheet Sena</div><p class="p-desc">Has a monthly budget. Tracks everything. Still broke because forgot to account for "fun".</p><span class="p-tag saver">planned broke</span></div>
+    <div class="p-card"><span class="p-emoji">🕳️</span><div class="p-name">Black Hole</div><p class="p-desc">Money enters wallet and immediately disappears. No one knows where. Not even them. Somehow survives.</p><span class="p-tag spender">maximum broke</span></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="border-top:1px solid var(--border)">
+  <footer>
+    <a href="#" class="f-logo">UPI<span>confessions</span></a>
+    <p>anonymous by design · judged by community · built for broke gen-z 💀</p>
+  </footer>
+</div>
+
+<script>
+// ── FLASHCARD DATA ──
+const cards = [
+  { amount:'₹580',  cat:'☕ Food',         note:'"cold brew + avocado toast at that fancy café near college. i am not okay financially."', broke:312, bougie:89, worth:230, time:'2 min ago' },
+  { amount:'₹2,400',cat:'🎬 Entertainment', note:'"bought concert tickets at 2am. zero regrets. completely broke now. still no regrets."', broke:312, bougie:891, worth:445, time:'8 min ago' },
+  { amount:'₹99',   cat:'📱 Subscription',  note:'"renewed spotify. currently using youtube music. muscle memory did this to me."', broke:445, bougie:112, worth:887, time:'12 min ago' },
+  { amount:'₹4,500',cat:'🛍️ Shopping',      note:'"3 things from myntra at 1am. returned 0 of them. eating maggi for a week."', broke:1820, bougie:90, worth:220, time:'18 min ago' },
+  { amount:'₹350',  cat:'🚗 Transport',     note:'"took ola instead of metro because it was raining. it was raining for 5 minutes."', broke:990, bougie:340, worth:560, time:'25 min ago' },
+  { amount:'₹1,200',cat:'🏋️ Health',        note:'"gym membership. went on day one. it has been 87 days. the membership auto-renewed."', broke:3200, bougie:45, worth:120, time:'31 min ago' },
+  { amount:'₹680',  cat:'🍕 Food',          note:'"ordered zomato when the mess was open and i had already paid for it this month."', broke:2100, bougie:55, worth:400, time:'45 min ago' },
+  { amount:'₹8,000',cat:'🛍️ Shopping',      note:'"new shoes. had 4 pairs already. these are different. they are the same."', broke:890, bougie:2200, worth:670, time:'1 hr ago' },
+];
+
+let current = 0;
+let selectedTag = 'roast';
+
+function renderCard() {
+  if (current >= cards.length) {
+    document.getElementById('flashCard').style.display = 'none';
+    document.getElementById('swipeBtns').style.display = 'none';
+    document.getElementById('allDone').classList.add('show');
+    document.querySelector('.swipe-hint').style.display = 'none';
+    return;
+  }
+  const c = cards[current];
+  document.getElementById('fcAmount').textContent = c.amount;
+  document.getElementById('fcCat').textContent = c.cat;
+  document.getElementById('fcNote').textContent = c.note;
+  document.getElementById('fcBroke').textContent = '💀 ' + c.broke;
+  document.getElementById('fcBougie').textContent = '👑 ' + c.bougie;
+  document.getElementById('fcWorth').textContent = '✅ ' + c.worth;
+  document.getElementById('fcTime').textContent = c.time;
+  document.getElementById('cardCounter').textContent = `Card ${current + 1} of ${cards.length}`;
+  const fc = document.getElementById('flashCard');
+  fc.classList.remove('swipe-left','swipe-right','swipe-up');
+  fc.style.transform = '';
+  fc.style.opacity = '';
+  // reset overlays
+  fc.querySelector('.broke-overlay').style.opacity = 0;
+  fc.querySelector('.bougie-overlay').style.opacity = 0;
+  fc.querySelector('.worth-overlay').style.opacity = 0;
+}
+
+function castVote(type) {
+  const fc = document.getElementById('flashCard');
+  if (type === 'broke')  { fc.classList.add('swipe-left');  showToast('💀 Voted Broke!'); }
+  if (type === 'bougie') { fc.classList.add('swipe-right'); showToast('👑 Voted Bougie!'); }
+  if (type === 'worth')  { fc.classList.add('swipe-up');    showToast('✅ Worth It!'); }
+  setTimeout(() => { current++; renderCard(); }, 380);
+}
+
+// ── DRAG TO SWIPE ──
+const fc = document.getElementById('flashCard');
+let startX = 0, startY = 0, isDragging = false;
+
+fc.addEventListener('mousedown', e => { startX = e.clientX; startY = e.clientY; isDragging = true; });
+document.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  fc.style.transform = `translateX(${dx}px) translateY(${dy}px) rotate(${dx * 0.08}deg)`;
+  fc.style.transition = 'none';
+  const bo = fc.querySelector('.broke-overlay');
+  const buo = fc.querySelector('.bougie-overlay');
+  const wo = fc.querySelector('.worth-overlay');
+  bo.style.opacity  = dx < -30 ? Math.min(1, Math.abs(dx)/120) : 0;
+  buo.style.opacity = dx > 30  ? Math.min(1, Math.abs(dx)/120) : 0;
+  wo.style.opacity  = dy < -30 ? Math.min(1, Math.abs(dy)/100) : 0;
+});
+document.addEventListener('mouseup', e => {
+  if (!isDragging) return;
+  isDragging = false;
+  fc.style.transition = '';
+  const dx = e.clientX - startX;
+  const dy = e.clientY - startY;
+  if (dx < -80) castVote('broke');
+  else if (dx > 80) castVote('bougie');
+  else if (dy < -80) castVote('worth');
+  else { fc.style.transform = ''; fc.querySelector('.broke-overlay').style.opacity=0; fc.querySelector('.bougie-overlay').style.opacity=0; fc.querySelector('.worth-overlay').style.opacity=0; }
+});
+
+// ── COMMENTS ──
+const defaultComments = {
+  0: [
+    { user:'@broke_oracle',    tag:'cheaper',  text:'bro i get the same cold brew for ₹180 near metro. you got scammed 💀' },
+    { user:'@upi_ghost',       tag:'roast',    text:'avocado toast in india is a hate crime against your wallet' },
+    { user:'@mainchar_energy', tag:'costlier', text:'paid ₹720 for the same thing last week. you actually ate well ngl 😭' },
+    { user:'@anonymous_rat',   tag:'roast',    text:'this is why you ask for money before month end' },
+    { user:'@thriftqueen99',   tag:'cheaper',  text:'chai tapri exists. ₹10 and you still get the energy.' },
+  ],
+  1: [
+    { user:'@concertrat',      tag:'roast',    text:'2am tickets?? the anxiety would have killed me before the concert' },
+    { user:'@nocap_finance',   tag:'roast',    text:'actually bougie ngl. this is the one time i agree with the spend' },
+  ],
+};
+
+function renderComments(idx) {
+  const list = document.getElementById('commentsList');
+  const comments = defaultComments[idx] || [];
+  list.innerHTML = comments.map(c => `
+    <div class="comment-item">
+      <div class="comment-top">
+        <span class="comment-user">${c.user}</span>
+        <span class="comment-tag ${c.tag}">${c.tag === 'cheaper' ? 'got it cheaper' : c.tag === 'costlier' ? 'found it costlier' : 'roast'}</span>
+      </div>
+      <p class="comment-text">${c.text}</p>
+    </div>
+  `).join('');
+  document.getElementById('commentCount').textContent = `${comments.length} roasts`;
+}
+
+function selectTag(tag) {
+  selectedTag = tag;
+  document.querySelectorAll('.tag-select').forEach(t => {
+    t.classList.remove('active','active-red','active-yellow');
+  });
+  const el = document.getElementById('tag-' + tag);
+  if (tag === 'cheaper') el.classList.add('active');
+  else if (tag === 'costlier') el.classList.add('active-red');
+  else el.classList.add('active-yellow');
+}
+
+function submitComment() {
+  const input = document.getElementById('commentInput');
+  const text = input.value.trim();
+  if (!text) return;
+  const list = document.getElementById('commentsList');
+  const item = document.createElement('div');
+  item.className = 'comment-item';
+  const tagLabel = selectedTag === 'cheaper' ? 'got it cheaper' : selectedTag === 'costlier' ? 'found it costlier' : 'roast';
+  item.innerHTML = `
+    <div class="comment-top">
+      <span class="comment-user">@you</span>
+      <span class="comment-tag ${selectedTag}">${tagLabel}</span>
+    </div>
+    <p class="comment-text">${text}</p>
+  `;
+  list.prepend(item);
+  input.value = '';
+  const count = document.getElementById('commentCount');
+  const n = parseInt(count.textContent) + 1;
+  count.textContent = `${n} roasts`;
+  showToast('roast dropped 🔥');
+}
+
+// ── CONFESS FORM ──
+function selectCat(el) {
+  document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function submitConfession() {
+  const amount = document.getElementById('amount').value;
+  const what = document.getElementById('what').value;
+  if (!amount || !what) { showToast('fill in amount & what for 👀'); return; }
+  showToast('confession dropped 💀');
+  document.getElementById('amount').value = '';
+  document.getElementById('what').value = '';
+  document.getElementById('note').value = '';
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ── THEME TOGGLE ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light');
+  document.getElementById('themeIcon').textContent = isLight ? '🌞' : '🌙';
+  localStorage.setItem('upi-theme', isLight ? 'light' : 'dark');
+}
+// restore saved theme
+if (localStorage.getItem('upi-theme') === 'light') {
+  document.body.classList.add('light');
+  document.getElementById('themeIcon').textContent = '🌞';
+}
+
+// ── TRENDING DATA ──
+const trendingData = [
+  { amount:'₹8,000', cat:'shopping',      catLabel:'🛍️ Shopping',      note:'"new shoes. had 4 pairs already. these are different. they\'re the same."',         broke:890,  bougie:2200, worth:670,  time:'3 hrs ago' },
+  { amount:'₹4,500', cat:'shopping',      catLabel:'🛍️ Shopping',      note:'"3 things from myntra at 1am. returned 0. eating maggi for a week."',                broke:3200, bougie:90,   worth:220,  time:'5 hrs ago' },
+  { amount:'₹1,200', cat:'subscription',  catLabel:'📱 Subscription',   note:'"gym membership. went on day 1. it\'s been 87 days. it auto-renewed."',              broke:4100, bougie:45,   worth:120,  time:'6 hrs ago' },
+  { amount:'₹2,400', cat:'entertainment', catLabel:'🎬 Entertainment',  note:'"concert tickets at 2am. completely broke. still zero regrets."',                    broke:890,  bougie:3100, worth:445,  time:'8 hrs ago' },
+  { amount:'₹680',   cat:'food',          catLabel:'🍕 Food',           note:'"ordered zomato when the mess was open. i already paid for mess this month."',       broke:2800, bougie:55,   worth:400,  time:'9 hrs ago' },
+  { amount:'₹350',   cat:'transport',     catLabel:'🚗 Transport',      note:'"took ola instead of metro. it was raining for literally 5 minutes."',               broke:1800, bougie:340,  worth:560,  time:'11 hrs ago' },
+  { amount:'₹580',   cat:'food',          catLabel:'☕ Food',           note:'"cold brew + avocado toast. i am not okay financially."',                            broke:3200, bougie:89,   worth:230,  time:'13 hrs ago' },
+  { amount:'₹299',   cat:'subscription',  catLabel:'📱 Subscription',   note:'"netflix for a show i watched in 1 night then cancelled. classic."',                 broke:560,  bougie:220,  worth:1800, time:'14 hrs ago' },
+  { amount:'₹12,000',cat:'shopping',      catLabel:'🛍️ Shopping',      note:'"impulse bought a smartwatch. my phone shows time. i know this."',                   broke:2100, bougie:1900, worth:800,  time:'16 hrs ago' },
+];
+
+let currentFilter = 'all';
+
+function getVerdict(broke, bougie, worth) {
+  const max = Math.max(broke, bougie, worth);
+  if (max === broke) return { label: '💀 Broke', cls: 'broke' };
+  if (max === bougie) return { label: '👑 Bougie', cls: 'bougie' };
+  return { label: '✅ Worth It', cls: 'worth' };
+}
+
+function renderTrending(filter) {
+  const filtered = filter === 'all' ? trendingData : trendingData.filter(d => d.cat === filter);
+  const grid = document.getElementById('trendingGrid');
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--mid);font-family:'DM Mono',monospace;font-size:0.82rem;">no confessions in this category yet 👀</div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map((d, i) => {
+    const total = d.broke + d.bougie + d.worth;
+    const brokePct = Math.round(d.broke / total * 100);
+    const bougiePct = Math.round(d.bougie / total * 100);
+    const worthPct = Math.round(d.worth / total * 100);
+    const verdict = getVerdict(d.broke, d.bougie, d.worth);
+    const rankCls = i === 0 ? 'top1' : i === 1 ? 'top2' : i === 2 ? 'top3' : '';
+    const rankLabel = i === 0 ? '🔥 #1' : i === 1 ? '⚡ #2' : i === 2 ? '💫 #3' : `#${i+1}`;
+    return `
+      <div class="t-card" style="animation: fadeUp 0.3s ${i * 0.06}s ease both">
+        <span class="t-rank-badge ${rankCls}">${rankLabel}</span>
+        <div class="t-amount">${d.amount}</div>
+        <div class="t-cat">${d.catLabel} · ${d.time}</div>
+        <p class="t-note">${d.note}</p>
+        <div class="t-bar-wrap">
+          <div class="t-bar-row">
+            <span class="t-bar-label">💀 ${brokePct}%</span>
+            <div class="t-bar-track"><div class="t-bar-fill broke" style="width:${brokePct}%"></div></div>
+            <span class="t-bar-val">${d.broke >= 1000 ? (d.broke/1000).toFixed(1)+'k' : d.broke}</span>
+          </div>
+          <div class="t-bar-row">
+            <span class="t-bar-label">👑 ${bougiePct}%</span>
+            <div class="t-bar-track"><div class="t-bar-fill bougie" style="width:${bougiePct}%"></div></div>
+            <span class="t-bar-val">${d.bougie >= 1000 ? (d.bougie/1000).toFixed(1)+'k' : d.bougie}</span>
+          </div>
+          <div class="t-bar-row">
+            <span class="t-bar-label">✅ ${worthPct}%</span>
+            <div class="t-bar-track"><div class="t-bar-fill worth" style="width:${worthPct}%"></div></div>
+            <span class="t-bar-val">${d.worth >= 1000 ? (d.worth/1000).toFixed(1)+'k' : d.worth}</span>
+          </div>
+        </div>
+        <div class="t-footer">
+          <span class="t-total">${total.toLocaleString('en-IN')} votes</span>
+          <span class="t-verdict ${verdict.cls}">${verdict.label}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterTrending(btn, filter) {
+  document.querySelectorAll('.t-filter').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderTrending(filter);
+}
+
+// init trending on load
+document.addEventListener('DOMContentLoaded', () => renderTrending('all'));
+
+// ── PERSONALITY BANNER ──
+const personalities = [
+  { emoji: '🎰', name: 'Impulse Oracle',   desc: 'Completely random. Vibes only. No logic.',              color: 'var(--yellow)' },
+  { emoji: '👑', name: 'UPI King/Queen',   desc: 'Max vibes. Min budgeting. Zero apologies.',              color: 'var(--green)'  },
+  { emoji: '🕳️', name: 'Black Hole',       desc: 'Money enters wallet and immediately disappears.',        color: 'var(--red)'    },
+  { emoji: '🧃', name: 'Chai Chuski',      desc: 'Small daily joys. Never splurges, never saves.',         color: 'var(--yellow)' },
+  { emoji: '🪨', name: 'Stone Wallet',     desc: 'Has money. Refuses to spend it. Still on free Spotify.', color: 'var(--blue)'   },
+  { emoji: '📊', name: 'Spreadsheet Sena', desc: 'Has a budget. Tracks everything. Still broke.',          color: 'var(--green)'  },
+];
+const rp = personalities[Math.floor(Math.random() * personalities.length)];
+document.getElementById('pbEmoji').textContent            = rp.emoji;
+document.getElementById('pbName').textContent             = rp.name;
+document.getElementById('pbDesc').textContent             = rp.desc;
+document.getElementById('pbName').style.color             = rp.color;
+document.getElementById('pbEmoji').style.borderColor      = rp.color;
+document.getElementById('pbEmoji').style.background       = rp.color.replace('var(','').replace(')','') + '20';
+// re-apply properly using inline style with opacity trick
+document.getElementById('pbEmoji').style.cssText = `border-color:${rp.color}; background:${rp.color}; opacity-filter:none; box-shadow: 0 0 0 1px ${rp.color}; background: color-mix(in srgb, ${rp.color} 15%, transparent);`;
+
+window.addEventListener('load', () => {
+  renderCard();
+  renderComments(0);
+  selectTag('roast');
+  setTimeout(() => {
+    document.querySelectorAll('[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      let curr = 0;
+      const step = target / 60;
+      const timer = setInterval(() => {
+        curr += step;
+        if (curr >= target) { curr = target; clearInterval(timer); }
+        el.textContent = Math.floor(curr).toLocaleString('en-IN');
+      }, 16);
+    });
+  }, 300);
+});
+</script>
+</body>
+</html>
